@@ -1,3 +1,7 @@
+# coding=utf-8
+
+from collections import deque
+
 graph = {
     'A': ['B', 'C'],
     'B': ['C', 'D'],
@@ -58,3 +62,16 @@ def find_shortest_path(graph, start, end, path=[]):
 
 print(find_shortest_path(graph, 'A', 'D'))
 
+# Code by Eryk Kopczyński
+def find_shortest_path_eryk(graph, start, end):
+    dist = {start: [start]}
+    q = deque(start)
+    while len(q):
+        at = q.popleft()
+        for next in graph[at]:
+            if next not in dist:
+                dist[next] = [dist[at], next]
+                q.append(next)
+    return dist.get(end)
+
+print(find_shortest_path_eryk(graph, 'A', 'D'))
