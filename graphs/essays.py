@@ -40,4 +40,21 @@ def find_all_paths(graph, start, end, path=[]):
                 paths.append(new_path)
     return paths
 
-print(find_all_paths(graph, 'A', 'D'))
+# print(find_all_paths(graph, 'A', 'D'))
+
+def find_shortest_path(graph, start, end, path=[]):
+    path = path + [start]
+    if (start == end):
+        return path
+    if not graph.has_key(start):
+        return None
+    shortest = None
+    for node in graph[start]:
+        if not node in path:
+            new_path = find_shortest_path(graph, node, end, path)
+            if not shortest or len(shortest) > len(new_path):
+                shortest = new_path
+    return shortest
+
+print(find_shortest_path(graph, 'A', 'D'))
+
