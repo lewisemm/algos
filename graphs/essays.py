@@ -24,4 +24,20 @@ def find_path(graph, start, end, path=[]):
                 return new_path
     return None
 
-print(find_path(graph, 'A', 'D'))
+# print(find_path(graph, 'A', 'D'))
+
+def find_all_paths(graph, start, end, path=[]):
+    path = path + [start]
+    if (start == end):
+        return [path]
+    if not graph.has_key(start):
+        return []
+    paths = []
+    for node in graph[start]:
+        if not node in path:
+            new_paths = find_all_paths(graph, node, end, path)
+            for new_path in new_paths:
+                paths.append(new_path)
+    return paths
+
+print(find_all_paths(graph, 'A', 'D'))
