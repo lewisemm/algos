@@ -31,6 +31,9 @@ def find_path(graph, start, end, path=[]):
 # print(find_path(graph, 'A', 'D'))
 
 def find_all_paths(graph, start, end, path=[]):
+    """
+    Finds all possible paths between two nodes in a graph.
+    """
     path = path + [start]
     if (start == end):
         return [path]
@@ -47,6 +50,9 @@ def find_all_paths(graph, start, end, path=[]):
 # print(find_all_paths(graph, 'A', 'D'))
 
 def find_shortest_path(graph, start, end, path=[]):
+    """
+    Finds the shortest path between two nodes in a graph.
+    """
     path = path + [start]
     if (start == end):
         return path
@@ -64,6 +70,12 @@ print(find_shortest_path(graph, 'A', 'D'))
 
 # Code by Eryk Kopczyński
 def find_shortest_path_eryk(graph, start, end):
+    """
+    Finds the shortest path between two nodes in a graph.
+
+    This implementation is an optimization of `find_shortest_path()` above
+    and it uses the Breadth First Search (BFS) algorithm.
+    """
     dist = {start: [start]}
     q = deque(start)
     while len(q):
