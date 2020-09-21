@@ -32,5 +32,26 @@ def is_palindrome(string, left_index, right_index):
         return True
     return is_palindrome(string, left_index + 1, right_index - 1)
 
-string = 'racecar'
-print(is_palindrome(string, 0, len(string) - 1))
+# string = 'racecar'
+# print(is_palindrome(string, 0, len(string) - 1))
+
+path = []
+def depth_first_traversal(graph, start, stack=[]):
+    """
+    Traverses a tree in a depth first manner.
+    """
+    stack.append(start)
+    if graph.get(start) == None:
+        path.append(stack[::])
+        return stack
+    for node in graph.get(start):
+        stack = depth_first_traversal(graph, node, stack)
+        stack.pop()
+    return stack
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D']
+}
+depth_first_traversal(graph, 'A')
+print(path)
