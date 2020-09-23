@@ -30,7 +30,6 @@ class BinaryTree(object):
     def __init__(self):
         self.root = None
 
-
     def insert(self, value):
         """
         Adds a node to the binary tree.
@@ -49,7 +48,7 @@ class BinaryTree(object):
                 current_node.left = Node(value)
             else:
                 current_node.right = Node(value)
-    
+
     def search(self, value):
         """
         Searches the binary tree for a node that contains the value `value`.
@@ -65,7 +64,36 @@ class BinaryTree(object):
                 current_node = temp
             else:
                 return None
-            
+
+    def inorder_traversal(self, node):
+        """
+        Displays all the nodes in the binary tree using inorder traversal.
+        """
+        if node is None:
+            return
+        self.inorder_traversal(node.left)
+        print(node.value)
+        self.inorder_traversal(node.right)
+
+    def preorder_traversal(self, node):
+        """
+        Displays all the nodes in the binary tree using preorder traversal.
+        """
+        if node is None:
+            return
+        print(node.value)
+        self.preorder_traversal(node.left)
+        self.preorder_traversal(node.right)
+
+    def postorder_traversal(self, node):
+        """
+        Displays all the nodes in the binary tree using postorder traversal.
+        """
+        if node is None:
+            return
+        self.postorder_traversal(node.left)
+        self.postorder_traversal(node.right)
+        print(node.value)
         
     def breadth_first(self):
         """
@@ -80,7 +108,7 @@ class BinaryTree(object):
                 q.append(current.left)
             if current.right:
                 q.append(current.right)
-            
+ 
 
 b = BinaryTree()
 b.insert(37)
@@ -90,6 +118,14 @@ b.insert(32)
 b.insert(31)
 b.insert(33)
 b.insert(32)
-b.breadth_first()
 print('Results for Search 42: {}'.format(b.search(42)))
-print('Results for Search 33: {}'.format(b.search(33)))
+print('Results for Search 33: {}\n\n'.format(b.search(33)))
+
+print('breadth first traversal\n')
+b.breadth_first()
+print('inorder traversal\n')
+b.inorder_traversal(b.root)
+print('preorder traversal\n')
+b.preorder_traversal(b.root)
+print('postorder traversal\n')
+b.postorder_traversal(b.root)
