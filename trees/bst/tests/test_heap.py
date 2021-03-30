@@ -51,3 +51,8 @@ def test_extract_max():
     ten = h.extract_max()
     assert nine >= ten
     assert len(h.heap) == 1
+    empty = h.extract_max()
+    assert empty == None
+    # length of heap remains one because zero index has been offset
+    # by design to make parent/child indice calculations easier
+    assert len(h.heap) == 1
