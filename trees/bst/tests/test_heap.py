@@ -56,3 +56,36 @@ def test_extract_max():
     # length of heap remains one because zero index has been offset
     # by design to make parent/child indice calculations easier
     assert len(h.heap) == 1
+
+def test_find_max():
+    """
+    [0, 1, 2, 3] ===> [0, 3, 2, 1]
+    """
+    h = heap.Heap([0, 1, 2, 3])
+    assert h.find_max() == 3
+
+def test_find_max_empty_heap():
+    """
+    [0] ===> [0]
+    """
+    h = heap.Heap([0])
+    assert h.find_max() == None
+
+def test_insert_empty_heap():
+    """
+
+    [] === (insert 45) ===> [0, 45]
+    """
+    h = heap.Heap()
+    assert h.heap == [0]
+    index = h.insert(45)
+    assert index == 1
+
+def test_insert_item():
+    """
+    [0, 1, 2, 3] === (insert 45) ===> [0, 45, 3, 2, 1]
+    """
+    h = heap.Heap([0, 1, 2, 3])
+    index = h.insert(45)
+    assert index == 1
+    assert h.heap == [0, 45, 3, 1, 2]

@@ -8,15 +8,45 @@ class Heap:
     and child indices.
     """
     def __init__(self, array=None):
-        self.heap = []
+        self.heap = [0]
         if array:
             self.heap = self.heapify(array)
     
     def find_max(self):
-        pass
+        """
+        Find and return the maximum item of the heap.
 
-    def insert(self):
-        pass
+        Does not remove the maximum item from heap.
+        """
+        if len(self.heap) < 2:
+            return None
+        return self.heap[1]
+
+    def insert(self, item):
+        """
+        Add a new item to the heap.
+
+        Returns final index of newly inserted item.
+        """
+        size = len(self.heap)
+        if size < 3:
+            if size == 0:
+                self.heap.append(0)
+            self.heap.append(item)
+            return 1
+
+        self.heap.append(item)
+        index =  len(self.heap) - 1
+        ancestor = [int(index / 2)]
+
+        while ancestor:
+            i = ancestor.pop()
+            if self.heap[index] > self.heap[i]:
+                self.heap[index], self.heap[i] = self.heap[i], self.heap[index]
+                index = i
+                if index > 1:
+                    ancestor.append(int(index / 2))
+        return index
 
     def extract_max(self):
         """
@@ -28,7 +58,7 @@ class Heap:
         size = len(self.heap)
         if size == 2:
             return self.heap.pop()
-        elif size == 1:
+        elif size < 2:
             return None
         rv = self.heap[1]
         self.heap[1] = self.heap.pop()
@@ -81,7 +111,6 @@ class Heap:
             parent = array[int(counter / 2)]
             if parent < array[counter]:
                 array[int(counter / 2)], array[counter] = array[counter], array[int(counter / 2)]
-                parent = array[int(counter / 2)]
                 ancestors.append(counter)
             counter -= 1
 
