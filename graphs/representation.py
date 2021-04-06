@@ -61,3 +61,56 @@ print(g.get_edges())
 
 print('Adjacency Matrix of graph g')
 print(g.get_matrix())
+
+# representation using Adjacency Lists
+class AdjNode(object):
+    """
+    A class to represent the adjacency list of the node.
+    """
+    def __init__(self, data):
+        self.vertex = data
+        self.next = None
+
+    def __repr__(self):
+        return '<AdjNode: {}>'.format(self.vertex)
+
+
+class GraphAdjList(object):
+    """
+    A graph representation using adjacency lists.
+    """
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = [None] * self.V
+
+    def add_edge(self, src, dest):
+        node = AdjNode(dest)
+        node.next = self.graph[src]
+        self.graph[src] = node
+
+        node = AdjNode(src)
+        node.next = self.graph[dest]
+        self.graph[dest] = node
+
+    def print_graph(self):
+        for i in range(self.V):
+            print("Adjacency list of vertex {}\n head".format(i))
+            temp = self.graph[i]
+            while temp:
+                print('-> {}'.format(temp.vertex))
+                temp = temp.next
+            print('\n')
+
+    def print_g(self):
+        print(self.graph)
+
+grrr = GraphAdjList(5)
+grrr.add_edge(0, 1)
+grrr.add_edge(0, 4)
+grrr.add_edge(1, 2)
+grrr.add_edge(1, 3)
+grrr.add_edge(1, 4)
+grrr.add_edge(2, 3)
+grrr.add_edge(3, 4)
+
+grrr.print_g()
