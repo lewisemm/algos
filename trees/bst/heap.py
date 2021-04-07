@@ -1,4 +1,4 @@
-from node import Node
+from trees.bst.node import Node
 
 class Heap:
     """
