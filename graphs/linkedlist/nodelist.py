@@ -1,4 +1,4 @@
-from linkedlist.node import Node
+from graphs.linkedlist.node import Node
 
 
 class NodeList:

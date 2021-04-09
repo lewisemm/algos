@@ -1,4 +1,4 @@
-from linkedlist.nodelist import NodeList
+from graphs.linkedlist.nodelist import NodeList
 
 
 class Graph:
@@ -16,7 +16,6 @@ class Graph:
     def set_edge(self, label1, label2):
         index1 = self.label_to_index[label1]
         index2 = self.label_to_index[label2]
-        print(f'index1: {index1}, index2: {index2}')
 
         if self.vertices[index1]:
             nl = self.vertices[index1]
@@ -40,17 +39,44 @@ class Graph:
             self.index_to_label[self.vi] = label
             self.vi += 1
 
-g = Graph(7)
-g.set_vertex('A')
-g.set_vertex('B')
-g.set_vertex('C')
-g.set_vertex('D')
-g.set_vertex('E')
-g.set_vertex('F')
-g.set_vertex('G')
-g.set_edge('A', 'B')
-g.set_edge('A', 'E')
-g.set_edge('A', 'F')
-g.set_edge('B', 'C')
-g.set_edge('C', 'D')
-g.set_edge('F', 'G')
+    def bfs(self, start_vertex):
+        queue = [self.label_to_index[start_vertex]]
+        visited = {
+            queue[0]: True
+        }
+        nodes = ''
+        while queue:
+            current = queue.pop(0)
+            adj_list = self.vertices[current]
+            try:
+                gen = adj_list.adjacent()
+                while gen:
+                    index = next(gen).index
+                    if not visited.get(index, False):
+                        queue.append(index)
+                        visited[index] = True
+            except StopIteration:
+                pass
+            nodes += f'{self.index_to_label[current]}, '
+        return nodes
+
+    def dfs(self, start_vertex):
+        stack = [self.label_to_index[start_vertex]]
+        visited = {
+            stack[0]: True
+        }
+        nodes = ''
+        while stack:
+            current = stack.pop()
+            adj_list = self.vertices[current]
+            try:
+                gen = adj_list.adjacent()
+                while gen:
+                    index = next(gen).index
+                    if not visited.get(index, False):
+                        stack.append(index)
+                        visited[index] = True
+            except StopIteration:
+                pass
+            nodes += f'{self.index_to_label[current]}, '
+        return nodes
