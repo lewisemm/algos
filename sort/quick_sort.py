@@ -1,24 +1,18 @@
-def partition(array, first, last):
-
-    pivot = array[last]
-
-    wall = first
-
-    for index in range(first, last):
-        if array[index] < pivot:
-            array[index], array[wall] = array[wall], array[index]
-            wall += 1
-
-    array.insert(wall, array.pop(last))
-
-    return wall
-
-
-def quick_sort(array, first, last):
-
-    if first < last:
-        pivot = partition(array, first, last)
-        quick_sort(array, first, pivot - 1)
-        quick_sort(array, pivot + 1, last)
-
-    return array
+def quick_sort(arr, start, stop):
+    length = stop - start
+    if length <= 1:
+        if length == 1 and arr[start] > arr[stop]:
+            arr[start], arr[stop] = arr[stop], arr[start]
+        return
+    # pivot index, left index, right index
+    pi, li, ri = start, start + 1, stop
+    while li <= ri:
+        if arr[li] > arr[pi]:
+            arr[li], arr[ri] = arr[ri], arr[li]
+            ri -= 1
+        elif arr[li] <= arr[pi]:
+            arr[li], arr[pi] = arr[pi], arr[li]
+            pi += 1
+            li = pi + 1
+    quick_sort(arr, start, pi)
+    quick_sort(arr, pi + 1, stop)
