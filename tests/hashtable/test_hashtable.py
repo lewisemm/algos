@@ -44,6 +44,24 @@ class HashTableTest(unittest.TestCase):
         self.assertEqual(self.hashtable.capacity, 16)
         self.assertEqual(len(self.hashtable.array), 16)
 
+    def test_hashtable_get(self):
+        """
+        Test get operation on hashtable.
+        """
+        a = [no for no in range(10)]
+        random.shuffle(a)
+        b = [no for no in range(10, 20)]
+        random.shuffle(b)
+        mapping = {}
+        for pair in zip(a, b):
+            key, value = pair
+            self.hashtable.insert(key, value)
+            mapping[pair] = True
+
+        for k, v in mapping:
+            self.assertEqual(self.hashtable.get(k), v)
+
+
     def test_hashtable_overwrite_with_insert(self):
         """
         Test overwrite when existing key is used in an insert operation.

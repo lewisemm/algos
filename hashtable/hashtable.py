@@ -34,6 +34,18 @@ class HashTable:
                 self.array[hashed].append((key, value))
         self.free_space -= 1
 
+    def get(self, key):
+        """
+        Creates a hash from `key` and `self.prime` and uses this hash to locate
+        value within `self.array`.
+        """
+        hashed = key % self.prime
+        element = self.array[hashed]
+        for k, v in element:
+            if k == key:
+                return v
+        raise KeyError(f"'{key}'")
+
     def __grow_hashtable(self):
         """
         Doubles the size of `self.array` when `self.capacity` is exceeded.
