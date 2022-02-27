@@ -25,7 +25,7 @@ def merge_sort(unsorted):
     if length <= 1:
         return unsorted
 
-    middle = length / 2
+    middle = length // 2
 
     left = unsorted[0:middle]
     right = unsorted[middle:length]
