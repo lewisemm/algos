@@ -235,3 +235,47 @@ class AVLTest(unittest.TestCase):
         self.assertEqual(self.avl.root, fifty)
         self.assertEqual(fifty.right, sixty)
 
+    def test_avl_integrity_with_random_delete_and_insert(self):
+        """
+        Test that the AVL tree maintains a height of log_n with random inserts
+        and deletes.
+        """
+        options = ('INSERT', 'DELETE')
+        node_count = 0
+        node_map = {}
+        for i in range(100):
+            choice = random.choice(options)
+            repeat = int(random.random() * 100)
+            if choice == 'INSERT':
+                for i in range(repeat):
+                    node = int(random.random() * 1000)
+                    node_map[node] = node_map.get(node, 0) + 1
+                    self.avl.insert(node)
+                    node_count += 1
+                ordered = inorder_traversal(self.avl)
+                self.assertEqual(len(ordered), node_count)
+                log_n_height = math.ceil(math.log(node_count, 2))
+                tree_height = self.avl.get_height(self.avl.root)
+                self.assertTrue(
+                    log_n_height - 1 <= tree_height <= log_n_height + 3)
+                bal = self.avl.get_balance(self.avl.root)
+                self.assertTrue(-1 <= bal <= 1)
+            elif choice == 'DELETE':
+                for i in range(repeat):
+                    node = int(random.random() * 1000)
+                    if node_map.get(node, 0) > 0:
+                        self.avl.delete(node)
+                        node_count -= 1
+                        node_map[node] -= 1
+                    else:
+                        with self.assertRaises(Exception):
+                            self.avl.delete(node)
+                ordered = inorder_traversal(self.avl)
+                self.assertEqual(len(ordered), node_count)
+                if node_count > 0:
+                    log_n_height = math.ceil(math.log(node_count, 2))
+                    tree_height = self.avl.get_height(self.avl.root)
+                    self.assertTrue(
+                        log_n_height - 1 <= tree_height <= log_n_height + 3)
+                bal = self.avl.get_balance(self.avl.root)
+                self.assertTrue(-1 <= bal <= 1)
