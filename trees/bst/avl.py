@@ -30,6 +30,64 @@ class AVL:
             parent.right = node
         self.rebalance_tree(ancestors)
 
+    def delete(self, key):
+        node, ancestors = self.find_node(key)
+        if not node:
+            raise Exception(f'Key {key} does not exist in this tree')
+        if len(ancestors) == 0:
+            if self.is_leaf(node):
+                self.root = None
+            elif not node.left or not node.right:
+                temp = node.left if node.left else node.right
+                self.root = temp
+            elif node.left and node.right:
+                successor, successor_parent = self.find_successor(node)
+                successor_right = successor.right
+                successor.left = node.left
+                successor.right = node.right
+                self.root = successor
+                if successor_parent.left == successor:
+                    successor_parent.left = successor_right
+                elif successor_parent.right == successor:
+                    successor_parent.right = successor_right
+        else:
+            node_parent = ancestors[-1]
+            if self.is_leaf(node):
+                if node_parent.left == node:
+                    node_parent.left = None
+                elif node_parent.right == node:
+                    node_parent.right = None
+                else:
+                    raise Exception('How!? How!?')
+            else:
+                if node.left and not node.right:
+                    if node_parent.left == node:
+                        node_parent.left = node.left
+                    elif node_parent.right == node:
+                        node_parent.right = node.left
+                elif not node.left and node.right:
+                    if node_parent.left == node:
+                        node_parent.left = node.right
+                    elif node_parent.right == node:
+                        node_parent.right = node.right
+                elif node.left and node.right:
+                    successor, successor_parent = self.find_successor(node)
+                    if successor_parent == node:
+                        if node_parent.left == node:
+                            node_parent.left = successor
+                        elif node_parent.right == node:
+                            node_parent.right = successor
+                        successor.left = node.left
+                    else:
+                        successor_parent.left = successor.right
+                        successor.right = node.right
+                        successor.left = node.left
+                        if node_parent.left == node:
+                            node_parent.left = successor
+                        elif node_parent.right == node:
+                            node_parent.right = successor
+        self.rebalance_tree(ancestors)
+
     def find_node(self, key):
         current = self.root
         ancestors = []

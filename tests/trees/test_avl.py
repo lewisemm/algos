@@ -127,3 +127,111 @@ class AVLTest(unittest.TestCase):
         found, _ = self.avl.find_node(findable)
         self.assertEqual(found, None)
 
+    def test_delete_node_with_only_left_subtree(self):
+        """
+                        60
+                       /  \
+                     30    70
+                    /        \
+                   20         80
+        """
+        nodes = [60, 70, 30, 20, 80]
+        for node in nodes:
+            self.avl.insert(node)
+        thirty = self.avl.root.left
+        twenty = thirty.left
+        found, _ = self.avl.find_node(thirty.key)
+        self.assertEqual(found, thirty)
+        self.avl.delete(thirty.key)
+        found, _ = self.avl.find_node(thirty.key)
+        self.assertEqual(found, None)
+        self.assertNotEqual(thirty, self.avl.root.left)
+        self.assertEqual(self.avl.root.left, twenty)
+
+    def test_delete_node_with_only_right_subtree(self):
+        """
+                   40
+                  /  \
+                30    60
+                /    /  \
+              20    50   70
+                          \
+                           80
+        """
+        nodes = [50, 30, 40, 20, 70, 60, 80]
+        for node in nodes:
+            self.avl.insert(node)
+        forty = self.avl.root
+        sixty = forty.right
+        seventy = sixty.right
+        eighty = seventy.right
+        found, _ = self.avl.find_node(seventy.key)
+        self.assertEqual(found, seventy)
+        self.avl.delete(seventy.key)
+        found, _ = self.avl.find_node(seventy.key)
+        self.assertEqual(found, None)
+        self.assertNotEqual(seventy, self.avl.root.right.right)
+        self.assertEqual(eighty, self.avl.root.right.right)
+
+    def test_delete_leaf_node(self):
+        """
+                   40
+                  /  \
+                30    60
+                /    /  \
+              20    50   70
+                          \
+                           80
+        """
+        nodes = [50, 30, 40, 20, 70, 60, 80]
+        for node in nodes:
+            self.avl.insert(node)
+        forty = self.avl.root
+        thirty = forty.left
+        twenty = thirty.left
+        sixty = forty.right
+        fifty = sixty.left
+        found, _ = self.avl.find_node(twenty.key)
+        self.assertEqual(twenty, found)
+        self.avl.delete(twenty.key)
+        found, _ = self.avl.find_node(twenty.key)
+        self.assertEqual(found, None)
+        self.assertEqual(thirty.left, None)
+        # tree after rotations
+        #     60
+        #    /  \
+        #   40   70
+        #  /  \    \
+        # 30  50   80
+        found, _ = self.avl.find_node(fifty.key)
+        self.assertEqual(fifty, found)
+        self.avl.delete(fifty.key)
+        found, _ = self.avl.find_node(fifty.key)
+        self.assertEqual(found, None)
+        self.assertEqual(self.avl.root, sixty)
+        self.assertEqual(forty.right, None)
+
+    def test_delete_root_node(self):
+        """
+                   40
+                  /  \
+                30    60
+                /    /  \
+              20    50   70
+                          \
+                           80
+        """
+        nodes = [50, 30, 40, 20, 70, 60, 80]
+        for node in nodes:
+            self.avl.insert(node)
+        forty = self.avl.root
+        sixty = forty.right
+        fifty = sixty.left
+        found, _ = self.avl.find_node(forty.key)
+        self.assertEqual(found, forty)
+        self.avl.delete(forty.key)
+        found, _ = self.avl.find_node(forty.key)
+        self.assertEqual(found, None)
+        self.assertEqual(self.avl.root, fifty)
+        self.assertEqual(fifty.right, sixty)
+
