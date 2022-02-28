@@ -99,3 +99,31 @@ class AVLTest(unittest.TestCase):
         bal = self.avl.get_balance(self.avl.root)
         self.assertTrue(-1 <= bal <= 1)
 
+    def test_find_node_existing_node(self):
+        """
+        Tests that a node can be found and returned in the tree.
+        """
+        nodes = 2**10
+        size = range(nodes)
+        a1025 = [no for no in size]
+        random.shuffle(a1025)
+        for no in a1025:
+            self.avl.insert(no)
+        findable = int(random.random() * nodes)
+        found, _ = self.avl.find_node(findable)
+        self.assertEqual(findable, found.key)
+
+    def test_find_node_non_existing_node(self):
+        """
+        Tests that `None` is returned when a node does not exist in the tree.
+        """
+        nodes = 2**10
+        size = range(nodes)
+        a1025 = [no for no in size]
+        random.shuffle(a1025)
+        for no in a1025:
+            self.avl.insert(no)
+        findable = 3347
+        found, _ = self.avl.find_node(findable)
+        self.assertEqual(found, None)
+

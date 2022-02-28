@@ -30,6 +30,19 @@ class AVL:
             parent.right = node
         self.rebalance_tree(ancestors)
 
+    def find_node(self, key):
+        current = self.root
+        ancestors = []
+        while current:
+            if current.key == key:
+                break
+            ancestors.append(current)
+            if key < current.key:
+                current = current.left
+            else:
+                current = current.right
+        return current, ancestors
+
     def rebalance_tree(self, ancestors):
         while ancestors:
             anc = ancestors.pop()
