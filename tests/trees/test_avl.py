@@ -26,3 +26,56 @@ class AVLTest(unittest.TestCase):
             self.avl.insert(no)
         ordered = inorder_traversal(self.avl)
         self.assertEqual(ordered, [no for no in size])
+
+    def test_left_left_rotation(self):
+        """
+                 50
+                /
+               40
+              /
+             30
+        """
+        self.avl.left_left_rotation = MagicMock()
+        a = [50, 40, 30]
+        for node in a:
+            self.avl.insert(node)
+        self.avl.left_left_rotation.assert_called_with(
+            self.avl.root.left, self.avl.root, None
+        )
+
+    def test_left_right_rotation(self):
+        """
+             50
+            /
+           30
+            \
+             40
+        """
+        self.avl.left_right_rotation = MagicMock()
+        self.avl.left_left_rotation = MagicMock()
+        a = [50, 30, 40]
+        for node in a:
+            self.avl.insert(node)
+        self.avl.left_right_rotation.assert_called_with(
+            self.avl.root.left.right, self.avl.root.left, self.avl.root
+        )
+        self.avl.left_left_rotation.assert_called_with(
+            self.avl.root.left, self.avl.root, None
+        )
+
+    def test_right_right_rotation(self):
+        """
+             50
+              \
+               60
+                 \
+                  70
+        """
+        self.avl.right_right_rotation = MagicMock()
+        a = [50, 60, 70]
+        for node in a:
+            self.avl.insert(node)
+        self.avl.right_right_rotation.assert_called_with(
+            self.avl.root.right, self.avl.root, None
+        )
+
