@@ -43,6 +43,17 @@ class AVL:
                 current = current.right
         return current, ancestors
 
+    def is_leaf(self, node):
+        return node.left == node.right == None
+
+    def find_successor(self, node):
+        parent = node
+        successor = node.right
+        while successor.left:
+            parent = successor
+            successor = successor.left
+        return successor, parent
+
     def rebalance_tree(self, ancestors):
         while ancestors:
             anc = ancestors.pop()
