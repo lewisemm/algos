@@ -29,6 +29,45 @@ class AVL:
         else:
             parent.right = node
 
+    def rebalance_tree(self, ancestors):
+        while ancestors:
+            anc = ancestors.pop()
+            anc_parent = ancestors[-1] if ancestors else None
+            bal = self.get_balance(anc)
+            if bal >= 2:
+                # LL or LR
+                skew = self.get_balance(anc.left)
+                if skew >= 1:
+                    # LL
+                    self.left_left_rotation(anc.left, anc, anc_parent)
+                elif skew <= -1:
+                    # LR
+                    self.left_right_rotation(anc.left.right, anc.left, anc)
+                    self.left_left_rotation(anc.left, anc, anc_parent)
+            elif bal <= -2:
+                # RR or RL
+                skew = self.get_balance(anc.right)
+                if skew <= -1:
+                    # RR
+                    self.right_right_rotation(anc.right, anc, anc_parent)
+                elif skew >= 1:
+                    # RL
+                    self.right_left_rotation(anc.right.left, anc.right, anc)
+                    self.right_right_rotation(anc.right, anc, anc_parent)
+
+    def get_height(self, node):
+        if node == None:
+            return -1
+        return 1 + max(
+            self.get_height(node.left),
+            self.get_height(node.right)
+        )
+
+    def get_balance(self, node):
+        left_height = self.get_height(node.left) if node else 0
+        right_height = self.get_height(node.right) if node else 0
+        return left_height - right_height
+
     def left_left_rotation(self, node, parent, grand_parent):
         branch = None
         if grand_parent:
