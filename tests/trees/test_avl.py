@@ -79,3 +79,23 @@ class AVLTest(unittest.TestCase):
             self.avl.root.right, self.avl.root, None
         )
 
+    def test_log_n_max_depth(self):
+        """
+        Tests that the height from root to leaf is theta log_n.
+        """
+        options = tuple([no for no in range(1, 10)])
+        exponent = random.choice(options)
+        nodes = 2**exponent
+        size = range(nodes)
+
+        vertices = [no for no in size]
+        random.shuffle(vertices)
+        for v in vertices:
+            self.avl.insert(v)
+        log_n_height = math.ceil(math.log(nodes, 2))
+        tree_height = self.avl.get_height(self.avl.root)
+        self.assertTrue(
+            log_n_height - 1 <= tree_height <= log_n_height + 3)
+        bal = self.avl.get_balance(self.avl.root)
+        self.assertTrue(-1 <= bal <= 1)
+
