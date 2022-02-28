@@ -28,6 +28,7 @@ class AVL:
             parent.left = node
         else:
             parent.right = node
+        self.rebalance_tree(ancestors)
 
     def rebalance_tree(self, ancestors):
         while ancestors:
