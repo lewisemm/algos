@@ -1,5 +1,5 @@
 from disjoint_set.disjoint_set import DisjointSet
-from graph import build_graph, Edge
+from graphs.graph import build_graph, Edge
 from heap.min_heap import MinHeap
 
 

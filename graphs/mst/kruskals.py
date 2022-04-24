@@ -1,6 +1,5 @@
 from disjoint_set.disjoint_set import DisjointSet
-
-from graph import build_graph
+from graphs.graph import build_graph
 from heap.min_heap import MinHeap
 
 

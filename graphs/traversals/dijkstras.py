@@ -1,8 +1,6 @@
-import sys
-
 from collections import OrderedDict
 
-from graph import build_graph, Edge
+from graphs.graph import build_graph, Edge
 from heap.min_heap import MinHeap
 
 
