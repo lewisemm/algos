@@ -1,7 +1,7 @@
 import unittest, random
 
 from sort import quick_sort
-from tests.sorts import helper
+from tests.sort import helper
 
 class TestQuickSort(unittest.TestCase):
 
