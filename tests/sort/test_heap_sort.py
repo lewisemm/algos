@@ -1,6 +1,7 @@
 import unittest, random
 
 from sort import heap_sort
+from tests.sort import helper
 
 class TestHeapSort(unittest.TestCase):
 
@@ -48,3 +49,9 @@ class TestHeapSort(unittest.TestCase):
             negative = not negative
         r_a100 = heap_sort.heap_sort_single_insert(values)
         self.assertEqual(r_a100, sorted(values))
+
+    def test_heap_sort_on_randomised_array_of_million_items(self):
+        width, scale = 10**6, 10**6
+        array = helper.create_randomised_array(width, scale)
+        newly_sorted = heap_sort.heap_sort(array)
+        self.assertEqual(newly_sorted, sorted(array))
