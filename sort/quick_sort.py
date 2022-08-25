@@ -14,5 +14,5 @@ def quick_sort(arr, start, stop):
             arr[li], arr[pi] = arr[pi], arr[li]
             pi += 1
             li = pi + 1
-    quick_sort(arr, start, pi)
+    quick_sort(arr, start, pi - 1)
     quick_sort(arr, pi + 1, stop)
