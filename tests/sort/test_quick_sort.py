@@ -1,6 +1,7 @@
 import unittest, random
 
 from sort import quick_sort
+from tests.sorts import helper
 
 class TestQuickSort(unittest.TestCase):
 
@@ -48,4 +49,11 @@ class TestQuickSort(unittest.TestCase):
         ideal = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
         self.assertEqual(a20, ideal)
+
+    def test_quicksort_on_randomised_array_of_million_items(self):
+        width, scale = 10**6, 10**6
+        array = helper.create_randomised_array(width, scale)
+        start, stop = 0, len(array) - 1
+        quick_sort.quick_sort(array, start, stop)
+        self.assertEqual(array, sorted(array))
 
