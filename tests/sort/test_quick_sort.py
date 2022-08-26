@@ -62,9 +62,9 @@ class TestQuickSort(unittest.TestCase):
         Test quicksort on an array that contains many repetitive values.
         This is expected to sort in O(n**2) time, which might result to a
         RecursionError before the sorting operation completes.
-        You may not get the recursion if your computer has ample memory. If this
-        is the case, adjust the width (array length) to something larger
-        e.g. 10**9.
+        You may not get the RecursionError if your computer has ample memory.
+        If this is the case, adjust the width (array length) to something
+        larger e.g. 10**9.
 
         Check similar test with three_way_quick_sort for comparison.
         """
