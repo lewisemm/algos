@@ -15,7 +15,7 @@ class TestQuickSort(unittest.TestCase):
         random_index = random.randint(0, 99)
 
         self.assertEqual(random_index, a100[random_index])
-        self.assertEqual(a100, [no for no in range(0,100)]) 
+        self.assertEqual(a100, [no for no in range(0,100)])
 
     def test_quick_sort_on_reversed_array_of_size_100(self):
         a100 = [no for no in range(99, -1, -1)]
@@ -57,3 +57,21 @@ class TestQuickSort(unittest.TestCase):
         quick_sort.quick_sort(array, start, stop)
         self.assertEqual(array, sorted(array))
 
+    def test_quick_sort_on_repetitive_array_of_million_items(self):
+        """
+        Test quicksort on an array that contains many repetitive values.
+        This is expected to sort in O(n**2) time, which might result to a
+        RecursionError before the sorting operation completes.
+        You may not get the recursion if your computer has ample memory. If this
+        is the case, adjust the width (array length) to something larger
+        e.g. 10**9.
+
+        Check similar test with three_way_quick_sort for comparison.
+        """
+        # width - array of one million values
+        # scale - integers in the array are of values between 0 - 100
+        width, scale = 10**6, 10**2
+        array = helper.create_randomised_array(width, scale)
+        start, stop = 0, len(array) - 1
+        with self.assertRaises(RecursionError):
+            quick_sort.quick_sort(array, start, stop)
