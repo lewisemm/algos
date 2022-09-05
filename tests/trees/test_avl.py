@@ -240,6 +240,20 @@ class AVLTest(unittest.TestCase):
         self.assertEqual(self.avl.root, fifty)
         self.assertEqual(fifty.right, sixty)
 
+    def test_avl_integrity_with_inorder_traversal(self):
+        """
+        Tests that the AVLTree maintains the BST property.
+        This is also a test to check that rotations perform as intended.
+        """
+        length = int(random.random() * 1000)
+        nodes = []
+        for i in range(length):
+            node = int(random.random() * 1000)
+            nodes.append(node)
+            self.avl.insert(node)
+        ordered = inorder_traversal(self.avl)
+        self.assertEqual(ordered, sorted(nodes))
+
     def test_avl_integrity_with_random_delete_and_insert(self):
         """
         Test that the AVL tree maintains a height of log_n with random inserts
