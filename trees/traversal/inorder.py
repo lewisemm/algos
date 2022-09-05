@@ -2,7 +2,7 @@ def traverse(node, inorder):
     if node == None:
         return
     traverse(node.left, inorder)
-    inorder.append(node.key)
+    inorder.append(node.val)
     traverse(node.right, inorder)
 
 def inorder_traversal(tree):
