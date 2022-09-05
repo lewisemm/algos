@@ -1,226 +1,200 @@
-from trees.bst.node import Node
+from trees.bst.node import TreeNode
 
-class AVL:
+class AVLTree:
     def __init__(self):
         self.root = None
 
-    def insert(self, key):
-        """
-        Inserts a new `Node` object into the tree.
-        """
+    def insert(self, val):
+        node = TreeNode(val)
         if self.root == None:
-            node = Node(key)
             self.root = node
             return
-        current = self.root
-        ancestors = []
-
-        while current:
-            ancestors.append(current)
-            if key < current.key:
-                current = current.left
-            else:
-                current = current.right
-
-        node = Node(key)
-        parent = ancestors[-1] if ancestors else None
-        if key < parent.key:
+        ancestors = self.get_insert_ancestors(node)
+        parent = ancestors[-1]
+        if node < parent:
             parent.left = node
         else:
             parent.right = node
         self.rebalance_tree(ancestors)
 
-    def delete(self, key):
-        node, ancestors = self.find_node(key)
-        if not node:
-            raise Exception(f'Key {key} does not exist in this tree')
-        if len(ancestors) == 0:
-            if self.is_leaf(node):
-                self.root = None
-            elif not node.left or not node.right:
-                temp = node.left if node.left else node.right
-                self.root = temp
-            elif node.left and node.right:
-                successor, successor_parent = self.find_successor(node)
-                successor_right = successor.right
-                successor.left = node.left
-                successor.right = node.right
-                self.root = successor
-                if successor_parent.left == successor:
-                    successor_parent.left = successor_right
-                elif successor_parent.right == successor:
-                    successor_parent.right = successor_right
-        else:
-            node_parent = ancestors[-1]
-            if self.is_leaf(node):
-                if node_parent.left == node:
-                    node_parent.left = None
-                elif node_parent.right == node:
-                    node_parent.right = None
-                else:
-                    raise Exception('How!? How!?')
-            else:
-                if node.left and not node.right:
-                    if node_parent.left == node:
-                        node_parent.left = node.left
-                    elif node_parent.right == node:
-                        node_parent.right = node.left
-                elif not node.left and node.right:
-                    if node_parent.left == node:
-                        node_parent.left = node.right
-                    elif node_parent.right == node:
-                        node_parent.right = node.right
-                elif node.left and node.right:
-                    successor, successor_parent = self.find_successor(node)
-                    if successor_parent == node:
-                        if node_parent.left == node:
-                            node_parent.left = successor
-                        elif node_parent.right == node:
-                            node_parent.right = successor
-                        successor.left = node.left
-                    else:
-                        successor_parent.left = successor.right
-                        successor.right = node.right
-                        successor.left = node.left
-                        if node_parent.left == node:
-                            node_parent.left = successor
-                        elif node_parent.right == node:
-                            node_parent.right = successor
-        self.rebalance_tree(ancestors)
-
-    def find_node(self, key):
-        current = self.root
-        ancestors = []
-        while current:
-            if current.key == key:
-                break
-            ancestors.append(current)
-            if key < current.key:
-                current = current.left
-            else:
-                current = current.right
-        return current, ancestors
-
-    def is_leaf(self, node):
-        return node.left == node.right == None
-
-    def find_successor(self, node):
-        parent = node
-        successor = node.right
-        while successor.left:
-            parent = successor
-            successor = successor.left
-        return successor, parent
-
     def rebalance_tree(self, ancestors):
         while ancestors:
             anc = ancestors.pop()
-            anc_parent = ancestors[-1] if ancestors else None
-            bal = self.get_balance(anc)
-            if bal >= 2:
-                # LL or LR
-                skew = self.get_balance(anc.left)
-                if skew >= 1:
-                    # LL
-                    self.left_left_rotation(anc.left, anc, anc_parent)
-                elif skew <= -1:
-                    # LR
-                    self.left_right_rotation(anc.left.right, anc.left, anc)
-                    self.left_left_rotation(anc.left, anc, anc_parent)
-            elif bal <= -2:
-                # RR or RL
-                skew = self.get_balance(anc.right)
-                if skew <= -1:
-                    # RR
-                    self.right_right_rotation(anc.right, anc, anc_parent)
-                elif skew >= 1:
-                    # RL
-                    self.right_left_rotation(anc.right.left, anc.right, anc)
-                    self.right_right_rotation(anc.right, anc, anc_parent)
+            parent = ancestors[-1] if ancestors else None
+            skew = self.get_balance(anc)
+            if skew > 1:
+                # ll imbalance or lr imbalance
+                child_skew = self.get_balance(anc.left)
+                if child_skew == 1:
+                    self.handle_ll_rotation(parent, anc)
+                elif child_skew == -1:
+                    self.handle_lr_rotation(parent, anc)
+            elif skew < -1:
+                # rr imbalance or rl imbalance
+                child_skew = self.get_balance(anc.right)
+                if child_skew == -1:
+                    # rr imbalance
+                    self.handle_rr_rotation(parent, anc)
+                elif child_skew == 1:
+                    # rl imbalance
+                    self.handle_rl_rotation(parent, anc)
+
+    def get_insert_ancestors(self, node):
+        current = self.root
+        ancestors = []
+        while current:
+            ancestors.append(current)
+            if node < current:
+                current = current.left
+            elif node >= current:
+                current = current.right
+        return ancestors
+
+    def get_balance(self, node):
+        if not node:
+            return 0
+        left_height = self.get_height(node.left)
+        right_height = self.get_height(node.right)
+        return left_height - right_height
 
     def get_height(self, node):
         if node == None:
             return -1
-        return 1 + max(
-            self.get_height(node.left),
-            self.get_height(node.right)
-        )
+        return 1 + max(self.get_height(node.left), self.get_height(node.right))
 
-    def get_balance(self, node):
-        left_height = self.get_height(node.left) if node else 0
-        right_height = self.get_height(node.right) if node else 0
-        return left_height - right_height
-
-    def left_left_rotation(self, node, parent, grand_parent):
-        branch = None
-        if grand_parent:
-            if parent == grand_parent.left:
-                branch = 'L'
-            elif parent == grand_parent.right:
-                branch = 'R'
-        node_right = node.right
-        node.right = parent
-        parent.left = node_right
-        if branch == 'L':
-            grand_parent.left = node
-        elif branch == 'R':
-            grand_parent.right = node
+    def handle_rr_rotation(self, parent, node):
+        two = node.right
+        temp = two.left
+        two.left = node
+        node.right = temp
+        if parent == None:
+            self.root = two
         else:
-            # branch is None and node is the new root.
-            # insert 50, 60, 30, 40, 20, 10 respectively to test this.
-            self.root = node
+            if node == parent.left:
+                parent.left = two
+            elif node == parent.right:
+                parent.right = two
 
-    def left_right_rotation(self, node, parent, grand_parent):
-        branch = None
-        if grand_parent:
-            if parent == grand_parent.left:
-                branch = 'L'
-            elif parent == grand_parent.right:
-                branch = 'R'
-        node_left = node.left
-        node.left = parent
-        parent.right = node_left
-        if branch == 'L':
-            grand_parent.left = node
-        elif branch == 'R':
-            grand_parent.right = node
-        else:
-            # branch is None and node is the new root.
-            # insert 40, 20, 5, 30, 25 respectively to test this.
-            self.root = node
+    def handle_rl_rotation(self, parent, node):
+        two = node.right
+        three = two.left
+        temp = three.right
+        three.right = two
+        two.left = temp
+        node.right = three
+        self.handle_rr_rotation(parent, node)
 
-    def right_right_rotation(self, node, parent, grand_parent):
-        branch = None
-        if grand_parent:
-            if parent == grand_parent.left:
-                branch = 'L'
-            elif parent == grand_parent.right:
-                branch = 'R'
-        node_left = node.left
-        node.left = parent
-        parent.right = node_left
-        if branch == 'L':
-            grand_parent.left = node
-        elif branch == 'R':
-            grand_parent.right = node
+    def handle_ll_rotation(self, parent, node):
+        two = node.left
+        temp = two.right
+        two.right = node
+        node.left = temp
+        if parent == None:
+            self.root = two
         else:
-            # branch is None and node is the new root.
-            # insert 50, 60, 70 respectively to test this
-            self.root = node
+            if node == parent.left:
+                parent.left = two
+            elif node == parent.right:
+                parent.right = two
 
-    def right_left_rotation(self, node, parent, grand_parent):
-        branch = None
-        if grand_parent:
-            if parent == grand_parent.left:
-                branch = 'L'
-            elif parent == grand_parent.right:
-                branch = 'R'
-        node_right = node.right
-        node.right = parent
-        parent.left = node_right
-        if branch == 'L':
-            grand_parent.left = node
-        elif branch == 'R':
-            grand_parent.right = node
-        else:
-            self.root = node
+    def handle_lr_rotation(self, parent, node):
+        two = node.left
+        three = two.right
+        temp = three.left
+        node.left = three
+        three.left = two
+        two.right = temp
+        self.handle_ll_rotation(parent, node)
+
+    def delete(self, node):
+        ancestors = self.search_ancestors(node)
+        parent = ancestors[-1] if ancestors else None
+        if node.is_leaf():
+            if parent == None:
+                self.root = None
+            else:
+                if node == parent.left:
+                    parent.left = None
+                elif node == parent.right:
+                    parent.right = None
+            del node
+        elif node.left != None and node.right == None:
+            if parent == None:
+                self.root = node.left
+            else:
+                if node == parent.left:
+                    parent.left = node.left
+                elif node == parent.right:
+                    parent.right = node.left
+            del node
+        elif node.right != None:
+            ios, ios_parent = self.inorder_successor(node)
+            if node == ios_parent:
+                # successor is node.right
+                ios.left = node.left
+                if parent == None:
+                    self.root = ios
+                else:
+                    if node == parent.left:
+                        parent.left = ios
+                    elif node == parent.right:
+                        parent.right = ios
+                del node
+            else:
+                ios_parent.left = ios.right
+                ios.right = node.right
+                ios.left = node.left
+                if parent == None:
+                    self.root = ios
+                elif parent != None:
+                    if node == parent.left:
+                        parent.left = ios
+                    elif node == parent.right:
+                        parent.right = ios
+                del node
+        self.rebalance_tree(ancestors)
+
+    def inorder_successor(self, node):
+        ios = node.right
+        ios_parent = node
+        while ios.left:
+            ios_parent = ios
+            ios = ios.left
+        return ios, ios_parent
+
+    def search_ancestors(self, node):
+        current = self.root
+        ancestors = []
+        while current:
+            if current == node:
+                break
+            ancestors.append(current)
+            if node < current:
+                current = current.left
+            else:
+                current = current.right
+        return ancestors
+
+    def find_node(self, val):
+        current = self.root
+        while current:
+            if current.val == val:
+                return current
+            if val < current.val:
+                current = current.left
+            else:
+                current = current.right
+        raise Exception(f'<Node: {val}> not found.')
+
+    def inorder_traversal(self):
+        current = self.root
+        print()
+        self.__inorder_traversal(current)
+        print()
+
+    def __inorder_traversal(self, node):
+        if node == None:
+            return
+        self.__inorder_traversal(node.left)
+        print(node)
+        self.__inorder_traversal(node.right)
