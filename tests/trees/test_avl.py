@@ -15,6 +15,17 @@ class AVLTest(unittest.TestCase):
     def tearDown(self):
         del self.avl
 
+    def assert_node_has_appropriate_balance(self, node):
+        """
+        Does an in order traversal to cover the entire tree and ensures that
+        each node has a balance that falls between -1 to 1.
+        """
+        if node == None:
+            return
+        self.assert_node_has_appropriate_balance(node.left)
+        self.assertTrue(-1 <= self.avl.get_balance(node) <= 1)
+        self.assert_node_has_appropriate_balance(node.right)
+
     def test_bst_property(self):
         """
         Test that tree maintains bst property after several inserts.
@@ -253,6 +264,17 @@ class AVLTest(unittest.TestCase):
             self.avl.insert(node)
         ordered = inorder_traversal(self.avl)
         self.assertEqual(ordered, sorted(nodes))
+
+    def test_each_avl_node_is_balanced(self):
+        """
+        Tests that each node in the AVL tree has a balance that is either -1, 0,
+        or 1.
+        """
+        length = int(random.random() * 1000)
+        for i in range(length):
+            node = int(random.random() * 1000)
+            self.avl.insert(node)
+        self.assert_node_has_appropriate_balance(self.avl.root)
 
     def test_avl_integrity_with_random_delete_and_insert(self):
         """
