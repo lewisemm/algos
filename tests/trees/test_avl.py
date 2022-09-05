@@ -4,13 +4,13 @@ import unittest
 
 from unittest.mock import MagicMock
 
-from trees.bst.avl import AVL
+from trees.bst.avl import AVLTree
 from trees.traversal.inorder import inorder_traversal
 
 
 class AVLTest(unittest.TestCase):
     def setUp(self):
-        self.avl = AVL()
+        self.avl = AVLTree()
 
     def tearDown(self):
         del self.avl
@@ -35,15 +35,13 @@ class AVLTest(unittest.TestCase):
               /
              30
         """
-        self.avl.left_left_rotation = MagicMock()
+        self.avl.handle_ll_rotation = MagicMock()
         a = [50, 40, 30]
         for node in a:
             self.avl.insert(node)
-        self.avl.left_left_rotation.assert_called_with(
-            self.avl.root.left, self.avl.root, None
-        )
+        self.avl.handle_ll_rotation.assert_called_with(None, self.avl.root)
 
-    def test_left_right_rotation(self):
+    def test_handle_left_right_rotation(self):
         """
              50
             /
@@ -51,17 +49,11 @@ class AVLTest(unittest.TestCase):
             \
              40
         """
-        self.avl.left_right_rotation = MagicMock()
-        self.avl.left_left_rotation = MagicMock()
+        self.avl.handle_lr_rotation = MagicMock()
         a = [50, 30, 40]
         for node in a:
             self.avl.insert(node)
-        self.avl.left_right_rotation.assert_called_with(
-            self.avl.root.left.right, self.avl.root.left, self.avl.root
-        )
-        self.avl.left_left_rotation.assert_called_with(
-            self.avl.root.left, self.avl.root, None
-        )
+        self.avl.handle_lr_rotation.assert_called_with(None, self.avl.root)
 
     def test_right_right_rotation(self):
         """
@@ -71,13 +63,12 @@ class AVLTest(unittest.TestCase):
                  \
                   70
         """
-        self.avl.right_right_rotation = MagicMock()
+        self.avl.handle_rr_rotation = MagicMock()
         a = [50, 60, 70]
         for node in a:
             self.avl.insert(node)
-        self.avl.right_right_rotation.assert_called_with(
-            self.avl.root.right, self.avl.root, None
-        )
+        self.avl.handle_rr_rotation.assert_called_with(None, self.avl.root)
+
 
     def test_log_n_max_depth(self):
         """
@@ -110,8 +101,8 @@ class AVLTest(unittest.TestCase):
         for no in a1025:
             self.avl.insert(no)
         findable = int(random.random() * nodes)
-        found, _ = self.avl.find_node(findable)
-        self.assertEqual(findable, found.key)
+        found = self.avl.find_node(findable)
+        self.assertEqual(findable, found.val)
 
     def test_find_node_non_existing_node(self):
         """
@@ -124,8 +115,8 @@ class AVLTest(unittest.TestCase):
         for no in a1025:
             self.avl.insert(no)
         findable = 3347
-        found, _ = self.avl.find_node(findable)
-        self.assertEqual(found, None)
+        with self.assertRaises(Exception):
+            found = self.avl.find_node(findable)
 
     def test_delete_node_with_only_left_subtree(self):
         """
@@ -140,11 +131,11 @@ class AVLTest(unittest.TestCase):
             self.avl.insert(node)
         thirty = self.avl.root.left
         twenty = thirty.left
-        found, _ = self.avl.find_node(thirty.key)
+        found = self.avl.find_node(thirty.val)
         self.assertEqual(found, thirty)
-        self.avl.delete(thirty.key)
-        found, _ = self.avl.find_node(thirty.key)
-        self.assertEqual(found, None)
+        self.avl.delete(thirty)
+        with self.assertRaises(Exception):
+            found = self.avl.find_node(thirty.val)
         self.assertNotEqual(thirty, self.avl.root.left)
         self.assertEqual(self.avl.root.left, twenty)
 
@@ -165,11 +156,11 @@ class AVLTest(unittest.TestCase):
         sixty = forty.right
         seventy = sixty.right
         eighty = seventy.right
-        found, _ = self.avl.find_node(seventy.key)
+        found = self.avl.find_node(seventy.val)
         self.assertEqual(found, seventy)
-        self.avl.delete(seventy.key)
-        found, _ = self.avl.find_node(seventy.key)
-        self.assertEqual(found, None)
+        self.avl.delete(seventy)
+        with self.assertRaises(Exception):
+            found = self.avl.find_node(seventy.val)
         self.assertNotEqual(seventy, self.avl.root.right.right)
         self.assertEqual(eighty, self.avl.root.right.right)
 
@@ -191,23 +182,24 @@ class AVLTest(unittest.TestCase):
         twenty = thirty.left
         sixty = forty.right
         fifty = sixty.left
-        found, _ = self.avl.find_node(twenty.key)
+        found = self.avl.find_node(twenty.val)
         self.assertEqual(twenty, found)
-        self.avl.delete(twenty.key)
-        found, _ = self.avl.find_node(twenty.key)
-        self.assertEqual(found, None)
+        self.avl.delete(twenty)
+        with self.assertRaises(Exception):
+            found = self.avl.find_node(twenty.val)
         self.assertEqual(thirty.left, None)
+        self.assertEqual(self.avl.root, sixty)
         # tree after rotations
         #     60
         #    /  \
         #   40   70
         #  /  \    \
         # 30  50   80
-        found, _ = self.avl.find_node(fifty.key)
+        found = self.avl.find_node(fifty.val)
         self.assertEqual(fifty, found)
-        self.avl.delete(fifty.key)
-        found, _ = self.avl.find_node(fifty.key)
-        self.assertEqual(found, None)
+        self.avl.delete(fifty)
+        with self.assertRaises(Exception):
+            found = self.avl.find_node(fifty.val)
         self.assertEqual(self.avl.root, sixty)
         self.assertEqual(forty.right, None)
 
@@ -227,11 +219,11 @@ class AVLTest(unittest.TestCase):
         forty = self.avl.root
         sixty = forty.right
         fifty = sixty.left
-        found, _ = self.avl.find_node(forty.key)
+        found = self.avl.find_node(forty.val)
         self.assertEqual(found, forty)
-        self.avl.delete(forty.key)
-        found, _ = self.avl.find_node(forty.key)
-        self.assertEqual(found, None)
+        self.avl.delete(forty)
+        with self.assertRaises(Exception):
+            found = self.avl.find_node(forty)
         self.assertEqual(self.avl.root, fifty)
         self.assertEqual(fifty.right, sixty)
 
@@ -264,12 +256,13 @@ class AVLTest(unittest.TestCase):
                 for i in range(repeat):
                     node = int(random.random() * 1000)
                     if node_map.get(node, 0) > 0:
-                        self.avl.delete(node)
+                        found = self.avl.find_node(node)
+                        self.avl.delete(found)
                         node_count -= 1
                         node_map[node] -= 1
                     else:
                         with self.assertRaises(Exception):
-                            self.avl.delete(node)
+                            self.avl.find_node(node)
                 ordered = inorder_traversal(self.avl)
                 self.assertEqual(len(ordered), node_count)
                 if node_count > 0:
