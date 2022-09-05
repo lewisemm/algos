@@ -69,6 +69,19 @@ class AVLTest(unittest.TestCase):
             self.avl.insert(node)
         self.avl.handle_rr_rotation.assert_called_with(None, self.avl.root)
 
+    def test_right_left_rotation(self):
+        """
+             50
+              \
+               70
+              /
+             60
+        """
+        self.avl.handle_rr_rotation = MagicMock()
+        a = [50, 70, 60]
+        for node in a:
+            self.avl.insert(node)
+        self.avl.handle_rr_rotation.assert_called_with(None, self.avl.root)
 
     def test_log_n_max_depth(self):
         """
