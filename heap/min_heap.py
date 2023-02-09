@@ -117,7 +117,6 @@ class MinHeap:
         """
         Builds a min-heap from scratch.
         """
-        # import pdb; pdb.set_trace()
         size = self.get_size()
         if size == 1:
             return
