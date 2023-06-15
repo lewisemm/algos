@@ -66,6 +66,35 @@ class AVLTest(unittest.TestCase):
             self.avl.insert(node)
         self.avl.handle_lr_rotation.assert_called_with(None, self.avl.root)
 
+    def test_handle_left_left_imbalance_with_balanced_child_node(self):
+        """
+        Test left left rotation on left heavy node whose child has a height > 1
+        and whose balance = 0.
+
+        Use 400 to avoid rotations when creating the tree.
+        Delete 400 to create desired scenario.
+
+        Note: The desired tree state can be resolved by a left left rotation
+        or a left right rotation.
+
+                                (desired tree state)     (should resolve to this)
+                    100                 100                 70
+                   /   \               /                   /  \
+                 70     400    ==>   70          ==>      60   100
+                /  \                /  \                       /
+              60    80             60   80                    80
+        """
+        a = [100, 70, 400, 60, 80]
+        for node in a:
+            self.avl.insert(node)
+        four_hundred = self.avl.root.right
+        self.assertEqual(four_hundred.val, 400)
+        self.avl.delete(four_hundred)
+        self.assertEqual(self.avl.root.val, 70)
+        self.assertEqual(self.avl.root.left.val, 60)
+        self.assertEqual(self.avl.root.right.val, 100)
+        self.assertEqual(self.avl.root.right.left.val, 80)
+
     def test_right_right_rotation(self):
         """
              50
