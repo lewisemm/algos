@@ -95,6 +95,35 @@ class AVLTest(unittest.TestCase):
         self.assertEqual(self.avl.root.right.val, 100)
         self.assertEqual(self.avl.root.right.left.val, 80)
 
+    def test_handle_right_right_imbalance_with_balanced_child_node(self):
+        """
+        Test right right imbalance on right heavy node whose child has a
+        height > 1 and whose balance = 0.
+
+        Use 60 to avoid rotations when creating the tree.
+        Delete 60 to create desired scenario.
+
+        Note: The desired tree state can be resolved by a right right rotation
+        or a right left rotation.
+
+                                (desired tree state)     (should resolve to this)
+                    70                 70                   100
+                   /   \                 \                 /   \
+                 60     100    ==>       100      ==>    70    400
+                       /   \            /   \              \
+                      80   400        80    400            80
+        """
+        a = [70, 60, 100, 80, 400]
+        for node in a:
+            self.avl.insert(node)
+        sixry = self.avl.root.left
+        self.assertEqual(sixry.val, 60)
+        self.avl.delete(sixry)
+        self.assertEqual(self.avl.root.val, 100)
+        self.assertEqual(self.avl.root.left.val, 70)
+        self.assertEqual(self.avl.root.right.val, 400)
+        self.assertEqual(self.avl.root.left.right.val, 80)
+
     def test_right_right_rotation(self):
         """
              50
