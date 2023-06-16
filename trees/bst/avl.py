@@ -25,14 +25,14 @@ class AVLTree:
             if skew > 1:
                 # ll imbalance or lr imbalance
                 child_skew = self.get_balance(anc.left)
-                if child_skew == 1:
+                if child_skew == 1 or child_skew == 0:
                     self.handle_ll_rotation(parent, anc)
                 elif child_skew == -1:
                     self.handle_lr_rotation(parent, anc)
             elif skew < -1:
                 # rr imbalance or rl imbalance
                 child_skew = self.get_balance(anc.right)
-                if child_skew == -1:
+                if child_skew == -1 or child_skew == 0:
                     # rr imbalance
                     self.handle_rr_rotation(parent, anc)
                 elif child_skew == 1:
