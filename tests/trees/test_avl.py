@@ -287,11 +287,11 @@ class AVLTest(unittest.TestCase):
 
     def test_delete_root_node(self):
         """
-                   40
-                  /  \
-                30    60
-                /    /  \
-              20    50   70
+                   40                        50
+                  /  \       after          /  \
+                30    60    rotation      30    70
+                /    /  \     ==>        /     /  \
+              20    50   70             20   60    80
                           \
                            80
         """
@@ -301,13 +301,14 @@ class AVLTest(unittest.TestCase):
         forty = self.avl.root
         sixty = forty.right
         fifty = sixty.left
+        seventy = sixty.right
         found = self.avl.find_node(forty.val)
         self.assertEqual(found, forty)
         self.avl.delete(forty)
         with self.assertRaises(Exception):
             found = self.avl.find_node(forty)
         self.assertEqual(self.avl.root, fifty)
-        self.assertEqual(fifty.right, sixty)
+        self.assertEqual(fifty.right, seventy)
 
     def test_avl_integrity_with_inorder_traversal(self):
         """
