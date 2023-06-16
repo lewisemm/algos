@@ -68,7 +68,7 @@ class AVLTest(unittest.TestCase):
 
     def test_handle_left_left_imbalance_with_balanced_child_node(self):
         """
-        Test left left rotation on left heavy node whose child has a height > 1
+        Test left left imbalance on left heavy node whose child has a height > 1
         and whose balance = 0.
 
         Use 400 to avoid rotations when creating the tree.
