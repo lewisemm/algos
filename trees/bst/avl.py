@@ -117,6 +117,10 @@ class AVLTree:
                     parent.left = None
                 elif node == parent.right:
                     parent.right = None
+                successor_ancestors = self.search_ancestors(
+                    parent.right or parent.left or parent
+                )
+                self.rebalance_tree(successor_ancestors)
             del node
         elif node.left != None and node.right == None:
             if parent == None:
@@ -126,6 +130,8 @@ class AVLTree:
                     parent.left = node.left
                 elif node == parent.right:
                     parent.right = node.left
+            successor_ancestors = self.search_ancestors(node.left)
+            self.rebalance_tree(successor_ancestors)
             del node
         elif node.right != None:
             ios, ios_parent = self.inorder_successor(node)
@@ -139,6 +145,8 @@ class AVLTree:
                         parent.left = ios
                     elif node == parent.right:
                         parent.right = ios
+                successor_ancestors = self.search_ancestors(node.right)
+                self.rebalance_tree(successor_ancestors)
                 del node
             else:
                 ios_parent.left = ios.right
@@ -151,8 +159,11 @@ class AVLTree:
                         parent.left = ios
                     elif node == parent.right:
                         parent.right = ios
+                successor_ancestors = self.search_ancestors(
+                    ios_parent.right or ios_parent.left or ios_parent
+                )
+                self.rebalance_tree(successor_ancestors)
                 del node
-        self.rebalance_tree(ancestors)
 
     def inorder_successor(self, node):
         ios = node.right
