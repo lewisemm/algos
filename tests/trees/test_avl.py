@@ -66,6 +66,64 @@ class AVLTest(unittest.TestCase):
             self.avl.insert(node)
         self.avl.handle_lr_rotation.assert_called_with(None, self.avl.root)
 
+    def test_handle_left_left_imbalance_with_balanced_child_node(self):
+        """
+        Test left left imbalance on left heavy node whose child has a height > 1
+        and whose balance = 0.
+
+        Use 400 to avoid rotations when creating the tree.
+        Delete 400 to create desired scenario.
+
+        Note: The desired tree state can be resolved by a left left rotation
+        or a left right rotation.
+
+                                (desired tree state)     (should resolve to this)
+                    100                 100                 70
+                   /   \               /                   /  \
+                 70     400    ==>   70          ==>      60   100
+                /  \                /  \                       /
+              60    80             60   80                    80
+        """
+        a = [100, 70, 400, 60, 80]
+        for node in a:
+            self.avl.insert(node)
+        four_hundred = self.avl.root.right
+        self.assertEqual(four_hundred.val, 400)
+        self.avl.delete(four_hundred)
+        self.assertEqual(self.avl.root.val, 70)
+        self.assertEqual(self.avl.root.left.val, 60)
+        self.assertEqual(self.avl.root.right.val, 100)
+        self.assertEqual(self.avl.root.right.left.val, 80)
+
+    def test_handle_right_right_imbalance_with_balanced_child_node(self):
+        """
+        Test right right imbalance on right heavy node whose child has a
+        height > 1 and whose balance = 0.
+
+        Use 60 to avoid rotations when creating the tree.
+        Delete 60 to create desired scenario.
+
+        Note: The desired tree state can be resolved by a right right rotation
+        or a right left rotation.
+
+                                (desired tree state)     (should resolve to this)
+                    70                 70                   100
+                   /   \                 \                 /   \
+                 60     100    ==>       100      ==>    70    400
+                       /   \            /   \              \
+                      80   400        80    400            80
+        """
+        a = [70, 60, 100, 80, 400]
+        for node in a:
+            self.avl.insert(node)
+        sixry = self.avl.root.left
+        self.assertEqual(sixry.val, 60)
+        self.avl.delete(sixry)
+        self.assertEqual(self.avl.root.val, 100)
+        self.assertEqual(self.avl.root.left.val, 70)
+        self.assertEqual(self.avl.root.right.val, 400)
+        self.assertEqual(self.avl.root.left.right.val, 80)
+
     def test_right_right_rotation(self):
         """
              50
@@ -229,11 +287,11 @@ class AVLTest(unittest.TestCase):
 
     def test_delete_root_node(self):
         """
-                   40
-                  /  \
-                30    60
-                /    /  \
-              20    50   70
+                   40                        50
+                  /  \       after          /  \
+                30    60    rotation      30    70
+                /    /  \     ==>        /     /  \
+              20    50   70             20   60    80
                           \
                            80
         """
@@ -243,13 +301,14 @@ class AVLTest(unittest.TestCase):
         forty = self.avl.root
         sixty = forty.right
         fifty = sixty.left
+        seventy = sixty.right
         found = self.avl.find_node(forty.val)
         self.assertEqual(found, forty)
         self.avl.delete(forty)
         with self.assertRaises(Exception):
             found = self.avl.find_node(forty)
         self.assertEqual(self.avl.root, fifty)
-        self.assertEqual(fifty.right, sixty)
+        self.assertEqual(fifty.right, seventy)
 
     def test_avl_integrity_with_inorder_traversal(self):
         """
