@@ -354,7 +354,7 @@ class AVLTest(unittest.TestCase):
                     node_count += 1
                 ordered = inorder_traversal(self.avl)
                 self.assertEqual(len(ordered), node_count)
-                log_n_height = math.ceil(math.log(node_count, 2))
+                log_n_height = math.floor(math.log(node_count, 2))
                 tree_height = self.avl.get_height(self.avl.root)
                 self.assertTrue(
                     log_n_height - 1 <= tree_height <= log_n_height + 3)
@@ -374,7 +374,7 @@ class AVLTest(unittest.TestCase):
                 ordered = inorder_traversal(self.avl)
                 self.assertEqual(len(ordered), node_count)
                 if node_count > 0:
-                    log_n_height = math.ceil(math.log(node_count, 2))
+                    log_n_height = math.floor(math.log(node_count, 2))
                     tree_height = self.avl.get_height(self.avl.root)
                     self.assertTrue(
                         log_n_height - 1 <= tree_height <= log_n_height + 3)
