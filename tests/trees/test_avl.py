@@ -356,9 +356,9 @@ class AVLTest(unittest.TestCase):
                 self.assertEqual(len(ordered), node_count)
                 log_n_height = math.floor(math.log(node_count, 2))
                 tree_height = self.avl.get_height(self.avl.root)
-                self.assertTrue(
-                    log_n_height - 1 <= tree_height <= log_n_height + 3)
                 bal = self.avl.get_balance(self.avl.root)
+                self.assertTrue(
+                    log_n_height <= tree_height <= log_n_height * 1.44)
                 self.assertTrue(-1 <= bal <= 1)
             elif choice == 'DELETE':
                 for i in range(repeat):
@@ -377,6 +377,6 @@ class AVLTest(unittest.TestCase):
                     log_n_height = math.floor(math.log(node_count, 2))
                     tree_height = self.avl.get_height(self.avl.root)
                     self.assertTrue(
-                        log_n_height - 1 <= tree_height <= log_n_height + 3)
+                        log_n_height <= tree_height <= log_n_height * 1.44)
                 bal = self.avl.get_balance(self.avl.root)
                 self.assertTrue(-1 <= bal <= 1)
