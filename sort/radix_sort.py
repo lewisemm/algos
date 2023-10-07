@@ -1,6 +1,6 @@
 def count_digits(number):
     count = 0
-    current = number
+    current = abs(number)
 
     while (current > 0):
         current = current // 10
@@ -13,33 +13,59 @@ def get_digit_at(number, position):
         raise Exception('Invalid digit position. Should be greater than 0')
     if (position > count_digits(number)):
         return 0
-    number = number // 10 ** (position - 1)
+    number = abs(number) // 10 ** (position - 1)
     return number % 10
 
 
 def radix_sort(array):
-    longest = 0
-    result = []
+    longest_pos, longest_neg = 0, 0
+    positives, negatives = [], []
+
     for no in array:
-        count = count_digits(no)
-        longest = max(count, longest)
-        # Input array will not be mutated. Add values to "result" and modify
-        # that instead.
-        result.append(no)
+        if (no >= 0):
+            longest_pos = max(longest_pos, no)
+            positives.append(no)
+        else:
+            negatives.append(no)
+            longest_neg = min(longest_neg, no)
+    longest_pos = count_digits(longest_pos)
+    longest_neg = count_digits(longest_neg)
 
     current_digit = 1
-    for _ in range(longest):
+    for _ in range(longest_pos):
         temp = [[] for _ in range(10)]
-        for no in result:
+        for no in positives:
             digit = get_digit_at(no, current_digit)
             temp[digit].append(no)
-        result = []
+        positives = []
         # treating each element in temp as a queue (first in first out)
         for q in temp:
             i = 0
             length = len(q)
             while (i < length):
-                result.append(q[i])
+                positives.append(q[i])
                 i += 1
         current_digit += 1
+
+    current_digit = 1
+    for _ in range(longest_neg):
+        temp = [[] for _ in range(10)]
+        for no in negatives:
+            digit = get_digit_at(no, current_digit)
+            temp[digit].append(no)
+        negatives = []
+        for q in temp:
+            i = 0
+            length = len(q)
+            while (i < length):
+                negatives.append(q[i])
+                i += 1
+        current_digit += 1
+
+    result = []
+    while negatives:
+        result.append(negatives.pop())
+    for no in positives:
+        result.append(no)
+
     return result
