@@ -1,8 +1,6 @@
 def quick_sort(arr, start, stop):
     length = stop - start
-    if length <= 1:
-        if length == 1 and arr[start] > arr[stop]:
-            arr[start], arr[stop] = arr[stop], arr[start]
+    if length < 1:
         return
     # pivot index, left index, right index
     pi, li, ri = start, start + 1, stop
